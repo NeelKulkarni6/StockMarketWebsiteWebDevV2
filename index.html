@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinPulse - Live Market Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <a href="#" class="nav-brand" aria-label="FinPulse home">
+        <span class="brand-icon" aria-hidden="true">&#9650;</span>
+        <span class="brand-name">FinPulse</span>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#market-status">Markets</a></li>
+        <li><a href="#crypto-dashboard">Crypto</a></li>
+        <li><a href="#voice-briefing">Briefing</a></li>
+        <li><a href="#watchlist">Watchlist</a></li>
+        <li><a href="#newsletter">Newsletter</a></li>
+      </ul>
+
+      <div class="nav-controls">
+        <button id="theme-toggle" class="icon-btn" aria-label="Toggle light/dark mode" title="Toggle theme">
+          <span class="theme-icon">&#9790;</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Live price ticker -->
+    <div class="ticker-bar" role="marquee" aria-label="Live cryptocurrency prices" aria-live="off">
+      <div class="ticker-label" aria-hidden="true">LIVE</div>
+      <div class="ticker-viewport">
+        <div class="ticker-track" id="ticker-track">
+          <span class="ticker-placeholder">Fetching live prices&hellip;</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ===== HERO ===== -->
+    <section class="hero-section" aria-labelledby="hero-heading">
+      <div class="hero-bg-grid" aria-hidden="true"></div>
+      <div class="hero-glow" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <div class="live-badge" aria-hidden="true">
+          <span class="live-dot"></span> LIVE DATA
+        </div>
+
+        <h1 id="hero-heading" class="hero-title">
+          Your Real&#8209;Time<br />
+          <span class="hero-title-accent">Market Intelligence</span><br />
+          Hub
+        </h1>
+
+        <p class="hero-subtitle">
+          Live crypto prices. Global exchange status. Voice market briefings. 
+          All in one data&#8209;rich dashboard.
+        </p>
+
+        <div class="hero-stats" id="hero-stats" aria-live="polite" aria-label="Global market summary">
+          <div class="stat-card reveal">
+            <span class="stat-label">Total Market Cap</span>
+            <span class="stat-value" id="total-market-cap">
+              <span class="stat-skeleton"></span>
+            </span>
+          </div>
+          <div class="stat-card reveal">
+            <span class="stat-label">24h Volume</span>
+            <span class="stat-value" id="total-volume">
+              <span class="stat-skeleton"></span>
+            </span>
+          </div>
+          <div class="stat-card reveal">
+            <span class="stat-label">BTC Dominance</span>
+            <span class="stat-value" id="btc-dominance">
+              <span class="stat-skeleton"></span>
+            </span>
+          </div>
+          <div class="stat-card reveal">
+            <span class="stat-label">Active Coins</span>
+            <span class="stat-value" id="active-coins">
+              <span class="stat-skeleton"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="hero-cta">
+          <a href="#crypto-dashboard" class="btn btn-primary">Explore Live Data</a>
+          <a href="#voice-briefing" class="btn btn-ghost">
+            <span aria-hidden="true">&#9654;</span> Voice Briefing
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-chart-decoration" aria-hidden="true">
+        <svg class="deco-chart" viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="0,140 40,120 80,130 120,90 160,100 200,60 240,70 280,30 320,50 360,20 400,10"
+            stroke="currentColor" stroke-width="2" fill="none" class="chart-line" />
+          <polyline points="0,140 40,120 80,130 120,90 160,100 200,60 240,70 280,30 320,50 360,20 400,10 400,180 0,180"
+            fill="currentColor" class="chart-fill" />
+        </svg>
+      </div>
+    </section>
+
+    <!-- ===== MARKET STATUS (Geolocation API) ===== -->
+    <section id="market-status" class="content-section" aria-labelledby="market-status-heading">
+      <div class="section-header animate-reveal">
+        <div class="section-tag">Global Markets</div>
+        <h2 id="market-status-heading">Exchange Status</h2>
+        <p class="section-sub">Which major exchanges are open right now? Powered by your browser's Geolocation API.</p>
+      </div>
+
+      <div class="location-panel animate-reveal" id="location-panel">
+        <div class="location-prompt" id="location-prompt">
+          <p>Allow location access for personalized local time and your nearest market status.</p>
+          <button id="get-location-btn" class="btn btn-primary">
+            <span aria-hidden="true">&#128205;</span> Use My Location
+          </button>
+          <button id="skip-location-btn" class="btn btn-ghost">Skip</button>
+        </div>
+      </div>
+
+      <div class="exchanges-grid" id="exchanges-grid" aria-label="Global stock exchange status"></div>
+    </section>
+
+    <!-- ===== CRYPTO DASHBOARD (CoinGecko API) ===== -->
+    <section id="crypto-dashboard" class="content-section" aria-labelledby="crypto-heading">
+      <div class="section-header animate-reveal">
+        <div class="section-tag">CoinGecko API</div>
+        <h2 id="crypto-heading">Live Crypto Dashboard</h2>
+        <p class="section-sub">Real-time data from CoinGecko. Auto-refreshes every 60 seconds.</p>
+      </div>
+
+      <div class="dashboard-controls animate-reveal">
+        <div class="search-wrap">
+          <label for="crypto-search" class="sr-only">Search cryptocurrencies</label>
+          <span class="search-icon" aria-hidden="true">&#128269;</span>
+          <input
+            type="search"
+            id="crypto-search"
+            class="search-input"
+            placeholder="Search coins..."
+            autocomplete="off"
+            aria-label="Search cryptocurrencies"
+          />
+        </div>
+
+        <div class="sort-controls" role="group" aria-label="Sort cryptocurrencies by">
+          <button class="sort-btn active" data-sort="market_cap">Market Cap</button>
+          <button class="sort-btn" data-sort="price">Price</button>
+          <button class="sort-btn" data-sort="change_24h">24h Change</button>
+          <button class="sort-btn" data-sort="volume">Volume</button>
+        </div>
+
+        <div class="refresh-info" id="refresh-info" aria-live="polite" aria-atomic="true">
+          <span class="refresh-dot" aria-hidden="true"></span>
+          <span id="refresh-text">Loading&hellip;</span>
+        </div>
+      </div>
+
+      <!-- Sentiment bar -->
+      <div class="sentiment-bar animate-reveal" id="sentiment-bar" aria-label="Market sentiment indicator">
+        <div class="sentiment-label bearish">Bearish</div>
+        <div class="sentiment-track">
+          <div class="sentiment-fill" id="sentiment-fill" style="width: 50%" role="img" aria-label="Market sentiment: loading"></div>
+        </div>
+        <div class="sentiment-label bullish">Bullish</div>
+        <span class="sentiment-score" id="sentiment-score">-</span>
+      </div>
+
+      <!-- Loading state -->
+      <div class="state-panel" id="crypto-loading" aria-live="polite" aria-label="Loading cryptocurrency data">
+        <div class="spinner" role="status">
+          <span class="sr-only">Loading&hellip;</span>
+        </div>
+        <p>Fetching live market data&hellip;</p>
+      </div>
+
+      <!-- Error state -->
+      <div class="state-panel error-state" id="crypto-error" style="display:none;" role="alert">
+        <span class="error-icon" aria-hidden="true">&#9888;</span>
+        <p id="crypto-error-msg">Failed to load market data.</p>
+        <button id="retry-btn" class="btn btn-primary">Retry</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper" id="crypto-table-wrapper" style="display:none;">
+        <table class="crypto-table" aria-label="Live cryptocurrency prices and market data">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Coin</th>
+              <th scope="col">Price (USD)</th>
+              <th scope="col">24h Change</th>
+              <th scope="col">7d Change</th>
+              <th scope="col">Market Cap</th>
+              <th scope="col">24h Volume</th>
+              <th scope="col">Watch</th>
+            </tr>
+          </thead>
+          <tbody id="crypto-tbody"></tbody>
+        </table>
+        <p class="data-source-note">
+          Data provided by <a href="https://www.coingecko.com" target="_blank" rel="noopener noreferrer">CoinGecko</a>. For educational purposes only. Not financial advice.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== VOICE BRIEFING (Web Speech API) ===== -->
+    <section id="voice-briefing" class="content-section voice-section" aria-labelledby="voice-heading">
+      <div class="section-header animate-reveal">
+        <div class="section-tag">Web Speech API</div>
+        <h2 id="voice-heading">Voice Market Briefing</h2>
+        <p class="section-sub">Get a spoken summary of the top market movers using your browser's built-in speech engine.</p>
+      </div>
+
+      <div class="voice-card animate-reveal" id="voice-card">
+        <div class="voice-waveform" id="voice-waveform" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="voice-controls-inner">
+          <div class="voice-setting">
+            <label for="voice-select">Voice</label>
+            <select id="voice-select" aria-label="Select speech voice"></select>
+          </div>
+          <div class="voice-setting">
+            <label for="voice-rate">
+              Speed: <span id="voice-rate-display" aria-live="polite">1.0x</span>
+            </label>
+            <input type="range" id="voice-rate" min="0.5" max="2" step="0.1" value="1" aria-label="Speech speed" />
+          </div>
+        </div>
+
+        <div class="voice-actions">
+          <button id="speak-btn" class="btn btn-primary btn-speak" aria-label="Play voice market briefing">
+            <span class="speak-icon" aria-hidden="true">&#9654;</span> Play Briefing
+          </button>
+          <button id="stop-btn" class="btn btn-ghost" style="display:none;" aria-label="Stop voice briefing">
+            <span aria-hidden="true">&#9632;</span> Stop
+          </button>
+        </div>
+
+        <div id="voice-error" class="inline-alert" style="display:none;" role="alert"></div>
+
+        <div class="voice-transcript-wrap" id="voice-transcript-wrap" style="display:none;">
+          <p class="transcript-label">Transcript</p>
+          <p id="voice-transcript" class="voice-transcript" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== WATCHLIST ===== -->
+    <section id="watchlist" class="content-section" aria-labelledby="watchlist-heading">
+      <div class="section-header animate-reveal">
+        <div class="section-tag">Saved</div>
+        <h2 id="watchlist-heading">Your Watchlist</h2>
+        <p class="section-sub">Click the star icon on any coin to track it. Saved locally to your browser.</p>
+      </div>
+
+      <div id="watchlist-empty" class="empty-state animate-reveal" role="status">
+        <span class="empty-icon" aria-hidden="true">&#11088;</span>
+        <p>No coins saved yet. Star any coin in the dashboard above to add it here.</p>
+      </div>
+
+      <div class="watchlist-grid" id="watchlist-grid" aria-label="Your saved cryptocurrencies" aria-live="polite"></div>
+    </section>
+
+    <!-- ===== NEWSLETTER ===== -->
+    <section id="newsletter" class="content-section newsletter-section" aria-labelledby="newsletter-heading">
+      <div class="newsletter-inner animate-reveal">
+        <div class="newsletter-copy">
+          <div class="section-tag">Weekly Insights</div>
+          <h2 id="newsletter-heading">Stay Ahead of the Market</h2>
+          <p>Get weekly crypto analysis, macro insights, and curated research delivered directly to your inbox.</p>
+          <ul class="newsletter-perks" role="list">
+            <li>Top mover breakdowns every Monday</li>
+            <li>On&#8209;chain data analysis</li>
+            <li>Macro events calendar</li>
+            <li>Risk management frameworks</li>
+          </ul>
+        </div>
+
+        <div class="newsletter-form-wrap">
+          <form id="newsletter-form" class="newsletter-form" novalidate aria-label="Newsletter subscription form">
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="first-name">First Name</label>
+                <input type="text" id="first-name" name="first-name" placeholder="Jane" autocomplete="given-name" required aria-required="true" aria-describedby="first-name-error" />
+                <span class="field-error" id="first-name-error" role="alert" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label for="last-name">Last Name</label>
+                <input type="text" id="last-name" name="last-name" placeholder="Doe" autocomplete="family-name" required aria-required="true" aria-describedby="last-name-error" />
+                <span class="field-error" id="last-name-error" role="alert" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" placeholder="jane@example.com" autocomplete="email" required aria-required="true" aria-describedby="email-error" />
+              <span class="field-error" id="email-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="interest">Primary Focus</label>
+              <select id="interest" name="interest" required aria-required="true" aria-describedby="interest-error">
+                <option value="">Select your focus area</option>
+                <option value="crypto">Cryptocurrency</option>
+                <option value="stocks">Stocks &amp; Equities</option>
+                <option value="macro">Macro Economics</option>
+                <option value="options">Options &amp; Derivatives</option>
+                <option value="all">Everything</option>
+              </select>
+              <span class="field-error" id="interest-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group form-group-check">
+              <input type="checkbox" id="terms" name="terms" required aria-required="true" aria-describedby="terms-error" />
+              <label for="terms">I agree to receive market insights and can unsubscribe at any time.</label>
+              <span class="field-error" id="terms-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">Subscribe for Free</button>
+          </form>
+
+          <div id="form-message" class="form-message" role="alert" aria-live="polite" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-icon" aria-hidden="true">&#9650;</span>
+        <span class="brand-name">FinPulse</span>
+      </div>
+
+      <p class="footer-disclaimer">
+        Cryptocurrency data provided by CoinGecko. This website is for educational purposes only and does not constitute financial advice. Always conduct your own research before making investment decisions.
+      </p>
+
+      <div class="footer-apis" aria-label="APIs used in this application">
+        <div class="api-pill">
+          <span aria-hidden="true">&#128205;</span> Geolocation API
+        </div>
+        <div class="api-pill">
+          <span aria-hidden="true">&#128266;</span> Web Speech API
+        </div>
+        <div class="api-pill">
+          <span aria-hidden="true">&#128202;</span> CoinGecko Data API
+        </div>
+        <div class="api-pill">
+          <span aria-hidden="true">&#128065;</span> Intersection Observer API
+        </div>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="#market-status">Markets</a>
+        <a href="#crypto-dashboard">Crypto</a>
+        <a href="#voice-briefing">Voice Briefing</a>
+        <a href="#watchlist">Watchlist</a>
+        <a href="#newsletter">Newsletter</a>
+      </nav>
+
+      <p class="footer-copy">&copy; 2026 FinPulse. Built for educational use.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
